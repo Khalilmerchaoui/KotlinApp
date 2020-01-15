@@ -19,7 +19,8 @@ class ProductsViewModel(val productsRepository : ProductsRepository ) : ViewMode
     fun getProducts() {
         productsRepository.getProducts(object : ProductsRepository.OnProductsDataListener {
             override fun onSuccess(data: Products) {
-                listOfProducts.value = data.products
+
+                listOfProducts.value = getRandomProductsList(data.products)
             }
 
             override fun onFailure(msg : String) {
@@ -27,5 +28,20 @@ class ProductsViewModel(val productsRepository : ProductsRepository ) : ViewMode
                 Log.i("tagged", msg)
             }
         })
+    }
+
+    fun getRandomProductsList(products : List<Product>) : List<Product> {
+        val randomizedList : MutableList<Product> = mutableListOf()
+        val productsListCopy = products.toMutableList()
+
+        for(i in 1..10) {
+        val randomProduct = productsListCopy.random()
+            randomizedList.add(randomProduct)
+            productsListCopy.remove(randomProduct)
+        }
+        //double the list and shuffle
+        randomizedList.addAll(randomizedList)
+        randomizedList.shuffle()
+        return randomizedList
     }
 }

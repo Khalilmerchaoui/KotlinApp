@@ -25,13 +25,13 @@ class ProductListAdapter(private val productList: List<Product>) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        //viewHolder.name?.text = productList[position].image.src
-        val imageUrl = productList[position].image.src
 
-        Glide.with(viewHolder.imageView.context).load(imageUrl).into(viewHolder.imageView)
+        //initialize tags
+        viewHolder.imageView.setTag(false)
+
 
         viewHolder.itemView.setOnClickListener {
-            onItemClickListener?.onItemClick(viewHolder.itemView, position)
+            onItemClickListener?.onItemClick(viewHolder.imageView, position)
         }
     }
 
@@ -45,6 +45,6 @@ class ProductListAdapter(private val productList: List<Product>) :
     }
 
     interface ItemClickListener {
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(view: ImageView, position: Int)
     }
 }

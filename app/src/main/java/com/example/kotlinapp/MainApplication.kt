@@ -1,6 +1,7 @@
 package com.example.kotlinapp
 
 import android.app.Application
+import com.bumptech.glide.request.target.ViewTarget
 import com.example.kotlinapp.repository.ProductsRepository
 import com.example.kotlinapp.viewModel.ProductsViewModel
 import org.koin.android.ext.android.startKoin
@@ -24,5 +25,8 @@ class MainApplication : Application() {
         startKoin(this,
             listOf(mainModule),
             loadPropertiesFromFile = true)
+
+        ViewTarget.setTagId(R.id.glide_tag)
+
     }
 }
