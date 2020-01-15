@@ -1,9 +1,9 @@
-package com.example.kotlinapp.ui
+package com.example.kotlinapp.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.kotlinapp.R
-import com.example.kotlinapp.data.ApiService
+import com.example.kotlinapp.ApiService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
