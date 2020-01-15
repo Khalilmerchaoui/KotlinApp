@@ -1,26 +1,27 @@
 package com.example.kotlinapp.repository
 
 import com.example.kotlinapp.ApiService
+import com.example.kotlinapp.model.Product
 import com.example.kotlinapp.model.Products
 import retrofit2.Call
 import retrofit2.Response
 
-class ProductsRepository {
+class ProductsRepository(val netWorkApi: ApiService) {
 
     fun getProducts(onProductsDataListener: OnProductsDataListener) {
-        ApiService().getProducts().enqueue(object : retrofit2.Callback<Products> {
+        netWorkApi.getProducts().enqueue(object : retrofit2.Callback<Products> {
             override fun onResponse(call: Call<Products>, response: Response<Products>) {
                 onProductsDataListener.onSuccess((response.body() as Products))
             }
 
             override fun onFailure(call: Call<Products>, t: Throwable) {
-                onProductsDataListener.onFailure()
+                onProductsDataListener.onFailure(t.message.toString())
             }
         })
     }
 
     interface OnProductsDataListener {
         fun onSuccess(data: Products)
-        fun onFailure()
+        fun onFailure(errormsg : String)
     }
 }
