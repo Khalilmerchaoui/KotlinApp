@@ -13,7 +13,9 @@ import com.example.kotlinapp.model.Product
 
 class ProductListAdapter(private val productList: List<Product>) :
     RecyclerView.Adapter<ProductListAdapter.ViewHolder>() {
+
     private var onItemClickListener: ItemClickListener? = null
+    private val imageViewsList : MutableList<ImageView> = mutableListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(p0?.context).inflate(R.layout.product_item_layout, p0, false)
@@ -24,15 +26,22 @@ class ProductListAdapter(private val productList: List<Product>) :
         return productList.size
     }
 
+    fun getImageView(position : Int) : ImageView {
+        return imageViewsList[position]
+    }
+
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         //initialize tags
         viewHolder.imageView.setTag(false)
 
 
+
         viewHolder.itemView.setOnClickListener {
-            onItemClickListener?.onItemClick(viewHolder.imageView, position)
+            onItemClickListener?.onItemClick(viewHolder.itemView, viewHolder.imageView, position)
         }
+
+        imageViewsList.add(viewHolder.imageView)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,6 +54,6 @@ class ProductListAdapter(private val productList: List<Product>) :
     }
 
     interface ItemClickListener {
-        fun onItemClick(view: ImageView, position: Int)
+        fun onItemClick(view : View,imageView: ImageView, position: Int)
     }
 }

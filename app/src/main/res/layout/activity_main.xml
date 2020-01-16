@@ -1,22 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.kotlinapp.viewModel.ProductsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/screen_background">
+        tools:context=".view.MainActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_height="match_parent"
+            android:background="@drawable/screen_background"
+            android:padding="4dp">
 
-            android:id="@+id/recyclerView"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_above="@+id/cardview"
+                android:orientation="vertical">
 
-    </RelativeLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/scoreLayout"
+                    android:layout_alignParentTop="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:id="@+id/txtScore"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="Score : 0"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:id="@+id/txtMoves"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="Moves : 0"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/ic_shuffle_logo"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/imgShuffle" />
+
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="12dp"
+                android:id="@+id/cardview"
+                app:cardElevation="8dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:background="@drawable/recyclerview_background"
+                    android:id="@+id/recyclerView"/>
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

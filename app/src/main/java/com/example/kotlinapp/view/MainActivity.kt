@@ -1,8 +1,15 @@
 package com.example.kotlinapp.view
 
+import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.VibrationEffect
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,62 +18,92 @@ import com.bumptech.glide.Glide
 import com.example.kotlinapp.R
 import com.example.kotlinapp.model.Product
 import com.example.kotlinapp.viewModel.ProductsViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import android.os.Vibrator
+import android.content.Context
+import android.view.LayoutInflater
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+
 
 class MainActivity : AppCompatActivity() {
 
     private val productListModel: ProductsViewModel by viewModel()
     private var firstCardClicked = false
+    private var secondCardClicked = false
     private var clickedPos = 0
-    private lateinit var clickedImageView : ImageView
+    private var moves = 0
+    private var score = 0
+    private var v : Vibrator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*val apiService = ApiService()
-
-        GlobalScope.launch(Dispatchers.Main) {
-            val response = apiService.getProducts(1).await();
-            txtResponse.text = response.products.toString()
-        }*/
+         v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView!!.layoutManager = GridLayoutManager(applicationContext,   4)
 
+        initGame()
 
-        productListModel.getProducts()
-
+        imgShuffle.setOnClickListener(View.OnClickListener {
+            initGame()
+            Toast.makeText(applicationContext, "Pictures shuffled !",Toast.LENGTH_SHORT).show()
+        })
         productListModel.listOfProducts.observe(this, Observer(function = fun(productList: List<Product>?) {
             productList?.let {
 
                 var productListAdapter = ProductListAdapter(productList)
                 recyclerView.adapter = productListAdapter
                 productListAdapter.setItemClickListener(object : ProductListAdapter.ItemClickListener {
-                    override fun onItemClick(imageView: ImageView, position: Int) {
+                    override fun onItemClick(view : View, imageView: ImageView, position: Int) {
 
-                        if(imageView.getTag() == false) {
-                            flipCard(imageView, productList, position)
-                        }
+                        updateMoves()
 
-                        //Todo() Check secondCardImageView issue
-
-                        if(firstCardClicked) {
-                            Log.i("tagged", "Second card clicked")
-                            if(productList.get(position).title.equals(productList.get(clickedPos).title)) {
-                                Log.i("tagged", "match between $position and $clickedPos")
-                            } else {
-                                Log.i("tagged", "no match between $position and $clickedPos")
-                                putBackCards(imageView, clickedImageView)
+                        if(secondCardClicked == false) {
+                            if (imageView.getTag() == false) {
+                                flipCard(imageView, productList, position)
                             }
-                            firstCardClicked = false
-                        } else {
-                            Log.i("tagged", "First card clicked")
-                            firstCardClicked = true
-                            clickedPos = position
-                            clickedImageView.findViewById<ImageView>(imageView.id)
+                            //Todo() Check secondCardImageView issue
+
+                            if (firstCardClicked) {
+                                Log.i("tagged", "Second card clicked")
+                                secondCardClicked = true
+                                if (productList.get(position).title.equals(
+                                        productList.get(
+                                            clickedPos
+                                        ).title
+                                    )
+                                ) {
+                                    Log.i("tagged", "match between $position and $clickedPos")
+                                    secondCardClicked = false
+                                    updateScore()
+
+                                } else {
+                                    Log.i("tagged", "no match between $position and $clickedPos")
+                                    // 1 second timer and freeze the recyclerview
+                                    Handler().postDelayed({
+                                        putBackCards(imageView)
+                                        putBackCards(productListAdapter.getImageView(clickedPos))
+                                        secondCardClicked = false
+                                    }, 1000)
+
+
+                                }
+                                firstCardClicked = false
+                            } else {
+                                Log.i("tagged", "First card clicked")
+                                firstCardClicked = true
+                                clickedPos = position
+                            }
+
                         }
 
+                        if(isGameOver(productList.size)) {
+                            showWinDialog()
+                        }
                     }
                 })
             }
@@ -74,12 +111,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun putBackCards(secondImageView : ImageView, firstImageView : ImageView) {
-        firstImageView.setTag(false)
-        firstImageView.setImageResource(R.drawable.shopify_logo)
-
-        secondImageView.setTag(false)
-        secondImageView.setImageResource(R.drawable.shopify_logo)
+    fun putBackCards(imageView : ImageView) {
+        imageView.setTag(false)
+        Glide.with(imageView.context).load(R.drawable.shopify_logo).into(imageView)
 
     }
 
@@ -87,5 +121,95 @@ class MainActivity : AppCompatActivity() {
         imageView.setTag(true)
         val imageUrl = productList[position].image.src
         Glide.with(imageView.context).load(imageUrl).into(imageView)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.game_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.menu_settings)
+            showSettingsDialog()
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun updateMoves() {
+        moves = moves.inc()
+        txtMoves.text = "Moves : $moves"
+    }
+
+    fun updateScore() {
+        score = score.inc()
+        txtScore.text = "Score : $score"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v!!.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            v!!.vibrate(200);
+        }
+    }
+
+    fun showWinDialog() {
+        val builder = AlertDialog.Builder(this@MainActivity)
+
+        builder.setTitle("You Won !!")
+
+        builder.setMessage("Start new game?")
+
+        builder.setPositiveButton("YES"){dialog, which ->
+            initGame()
+        }
+
+
+        builder.setNeutralButton("Cancel"){_,_ ->
+
+        }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
+    }
+
+    fun initGame() {
+         firstCardClicked = false
+         secondCardClicked = false
+         clickedPos = 0
+         moves = 0
+         score = 0
+
+        productListModel.getProducts()
+        txtScore.text = "Score : $score"
+        txtMoves.text = "Moves : $moves"
+    }
+
+    fun isGameOver(size : Int) : Boolean{
+        return score * 2 == size
+    }
+
+    fun showSettingsDialog() {
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.settings_dialog, null)
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setTitle("Settings")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+        //login button click of custom layout
+        /*mDialogView..setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+            //get text from EditTexts of custom layout
+            val name = mDialogView.dialogNameEt.text.toString()
+            val email = mDialogView.dialogEmailEt.text.toString()
+            val password = mDialogView.dialogPasswEt.text.toString()
+            //set the input text in TextView
+        }
+        //cancel button click of custom layout
+        mDialogView.dialogCancelBtn.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }*/
     }
 }

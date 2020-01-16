@@ -7,14 +7,19 @@ import com.example.kotlinapp.model.Product
 import com.example.kotlinapp.model.Products
 import com.example.kotlinapp.repository.ProductsRepository
 import org.koin.standalone.KoinComponent
+import androidx.lifecycle.MediatorLiveData
+
+
 
 class ProductsViewModel(val productsRepository : ProductsRepository ) : ViewModel(), KoinComponent {
 
     var listOfProducts = MutableLiveData<List<Product>>()
 
+
     init {
         listOfProducts.value = listOf()
     }
+
 
     fun getProducts() {
         productsRepository.getProducts(object : ProductsRepository.OnProductsDataListener {
