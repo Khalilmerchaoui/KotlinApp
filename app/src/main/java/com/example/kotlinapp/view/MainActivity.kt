@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.kotlinapp.model.Utility
 import kotlinx.android.synthetic.main.settings_dialog.view.*
 
 
@@ -47,8 +48,11 @@ class MainActivity : AppCompatActivity() {
 
          v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
+        var nbrOfColumns  = Utility.calculateNoOfColumns(applicationContext, 96.0f);
+        nbrOfColumns = roundEven(nbrOfColumns)
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView!!.layoutManager = GridLayoutManager(applicationContext,   4)
+        recyclerView!!.layoutManager = GridLayoutManager(applicationContext,   nbrOfColumns)
 
         initGame()
 
@@ -216,4 +220,8 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    fun roundEven(d : Int) : Int {
+    return (Math.round(d / 2.0) * 2).toInt();
+}
 }
