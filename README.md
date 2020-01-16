@@ -11,8 +11,12 @@
 
 ## Third-party libraries : 
 
-* Retrofit
-* Glide
-* GSON
-* Kotlin Coroutines
-* LiveData
+* Retrofit   (https://github.com/square/retrofit)
+
+* Glide      (https://github.com/bumptech/glide)
+
+* GSON       (https://github.com/google/gson)
+
+* Coroutines (https://github.com/Kotlin/kotlinx.coroutines)
+
+* LiveData   
