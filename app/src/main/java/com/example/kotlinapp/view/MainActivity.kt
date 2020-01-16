@@ -23,8 +23,10 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import android.os.Vibrator
 import android.content.Context
 import android.view.LayoutInflater
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import kotlinx.android.synthetic.main.settings_dialog.view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private var moves = 0
     private var score = 0
     private var v : Vibrator? = null
+
+    private var gridSize = 20
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -197,19 +201,19 @@ class MainActivity : AppCompatActivity() {
         //show dialog
         val  mAlertDialog = mBuilder.show()
         //login button click of custom layout
-        /*mDialogView..setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-            //get text from EditTexts of custom layout
-            val name = mDialogView.dialogNameEt.text.toString()
-            val email = mDialogView.dialogEmailEt.text.toString()
-            val password = mDialogView.dialogPasswEt.text.toString()
-            //set the input text in TextView
-        }
-        //cancel button click of custom layout
-        mDialogView.dialogCancelBtn.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }*/
+
+        mDialogView.gridSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                gridSize = seekBar!!.progress
+            }
+
+        })
+
     }
 }

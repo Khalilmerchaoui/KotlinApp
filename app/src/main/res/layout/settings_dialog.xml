@@ -4,17 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Grid Size" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,6 +14,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="Grid Size" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:min="20"
+            android:max="32"
+            android:progress="24"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/gridSize"/>
     </LinearLayout>
 </LinearLayout>
