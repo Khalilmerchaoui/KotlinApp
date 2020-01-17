@@ -1,6 +1,5 @@
 package com.example.kotlinapp.view
 
-import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -27,6 +26,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.kotlinapp.model.Utility
+import kotlinx.android.synthetic.main.settings_dialog.*
 import kotlinx.android.synthetic.main.settings_dialog.view.*
 
 
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-         v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         var nbrOfColumns  = Utility.calculateNoOfColumns(applicationContext, 96.0f);
         nbrOfColumns = roundEven(nbrOfColumns)
@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity() {
          moves = 0
          score = 0
 
-        productListModel.getProducts()
+        productListModel.getProducts(gridSize)
         txtScore.text = "Score : $score"
         txtMoves.text = "Moves : $moves"
     }
@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity() {
         val  mAlertDialog = mBuilder.show()
         //login button click of custom layout
 
-        mDialogView.gridSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        mDialogView.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             }
 
@@ -215,6 +215,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 gridSize = seekBar!!.progress
+                mDialogView.txtgridSize.text = "$gridSize"
+                initGame()
             }
 
         })

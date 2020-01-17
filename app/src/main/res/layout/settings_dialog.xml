@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/tGridSize"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="Grid Size" />
 
         <SeekBar
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:min="20"
-            android:max="32"
+            android:max="24"
+            android:layout_toEndOf="@id/tGridSize"
             android:progress="24"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/gridSize"/>
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/txtgridSize"
+            android:id="@+id/seekbar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtgridSize"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:text="20"/>
+    </RelativeLayout>
 </LinearLayout>

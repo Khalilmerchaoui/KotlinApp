@@ -21,25 +21,24 @@ class ProductsViewModel(val productsRepository : ProductsRepository ) : ViewMode
     }
 
 
-    fun getProducts() {
+    fun getProducts(gridSize : Int) {
         productsRepository.getProducts(object : ProductsRepository.OnProductsDataListener {
             override fun onSuccess(data: Products) {
 
-                listOfProducts.value = getRandomProductsList(data.products)
+                listOfProducts.value = getRandomProductsList(data.products, gridSize)
             }
 
             override fun onFailure(msg : String) {
                 //REQUEST FAILED
-                Log.i("tagged", msg)
             }
         })
     }
 
-    fun getRandomProductsList(products : List<Product>) : List<Product> {
+    fun getRandomProductsList(products : List<Product>, gridSize: Int) : List<Product> {
         val randomizedList : MutableList<Product> = mutableListOf()
         val productsListCopy = products.toMutableList()
 
-        for(i in 1..10) {
+        for(i in 1..(gridSize/2)) {
         val randomProduct = productsListCopy.random()
             randomizedList.add(randomProduct)
             productsListCopy.remove(randomProduct)
