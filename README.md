@@ -1,4 +1,4 @@
-# KotlinApp
+# Matching Game
 
 ## Screenshots
 
